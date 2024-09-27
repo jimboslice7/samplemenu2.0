@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Menu Sample</title>
+    
+    <!-- Google Analytics Tracking Code -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTXHCQCXZC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-BTXHCQCXZC');
+    </script>
+    
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f8f8;
+        }
+        img {
+            max-width: 80%;
+            height: auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px; /* Adds space between menu and buttons */
+        }
+        #ad {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+        .button {
+            display: none;
+            position: fixed;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 5px;
+        }
+        #exploreNearbyButton {
+            bottom: 70px; /* Position above the other button */
+            right: 20px;
+        }
+        #specialOffersButton {
+            bottom: 20px; /* Position below the other button */
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Displaying the sample menu image -->
+    <img src="SampleMenu.jpg" alt="Digital Menu">
+
+    <!-- Advertisement section -->
+    <div id="ad">Special Offer: 20% off at a local coffee shop! Visit the Art Museum Today!</div>
+
+    <!-- Button to reveal nearby activities with a map pin icon -->
+    <button id="exploreNearbyButton" class="button" onclick="showExploreNearby()">📍 Explore Nearby</button>
+
+    <!-- Button to reveal special offers with a gift box icon -->
+    <button id="specialOffersButton" class="button" onclick="showSpecialOffers()">🎁 Special Offers</button>
+
+    <script>
+        window.onload = function() {
+            var ad = document.getElementById('ad');
+            var exploreNearbyButton = document.getElementById('exploreNearbyButton');
+            var specialOffersButton = document.getElementById('specialOffersButton');
+            
+            // Fade in the ad on load
+            ad.style.opacity = 1;
+            
+            // After 3 seconds, fade out the ad
+            setTimeout(function() {
+                ad.style.opacity = 0;
+            }, 3000);
+
+            // Show the buttons after the ad fades out
+            setTimeout(function() {
+                exploreNearbyButton.style.display = 'block';
+                specialOffersButton.style.display = 'block';
+            }, 5000);
+        }
+
+        function showExploreNearby() {
+            alert("Explore Nearby activities and events are displayed here."); // Replace with actual functionality
+            gtag('event', 'button_tap', {
+                'event_category': 'User Interaction',
+                'event_label': 'Explore Nearby Button'
+            });
+        }
+
+        function showSpecialOffers() {
+            alert("Special Offers from nearby stores are displayed here."); // Replace with actual functionality
+            gtag('event', 'button_tap', {
+                'event_category': 'User Interaction',
+                'event_label': 'Special Offers Button'
+            });
+        }
+    </script>
+</body>
+</html>
