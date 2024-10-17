@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Brunch Menu Sample</title>
+    
+    <!-- Open Graph Metadata for NFC Popup -->
+    <meta property="og:title" content="Brunch Place Menu" />
+    <meta property="og:description" content="Tap to explore our brunch menu, special offers, and nearby activities!" />
+    <meta property="og:url" content="https://jimboslice7.github.io/samplemenu/" />
+    <meta property="og:image" content="https://jimboslice7.github.io/samplemenu/toasticon.png" />
+    
+    <!-- Google Analytics Tracking Code -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BTXHCQCXZC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-BTXHCQCXZC');
+    </script>
+    
+    <style>
+        /* General Styles */
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f8f8;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Ensure image scales properly */
+        #menu-image {
+            max-width: 90%;
+            height: auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Advertisement Banner */
+        #ad {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #800423;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 20px;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            z-index: 10;
+        }
+
+        /* Button Styles */
+        .button {
+            opacity: 0;
+            position: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #D2B48C;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 20px;
+            font-weight: bold;
+            z-index: 20;
+            transition: opacity 1s ease-in-out, width 0.5s ease, height 0.5s ease;
+            width: 220px;
+            height: 60px;
+            padding: 20px 25px;
+            white-space: nowrap;
+        }
+
+        .button.disabled {
+            pointer-events: none;
+        }
+
+        .button.shrunk {
+            width: 60px;
+            height: 60px;
+            padding: 15px;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .button .text {
+            display: inline-block;
+            opacity: 0;
+            transition: opacity 0.3s ease 0.5s;
+            white-space: nowrap;
+        }
+
+        .button:not(.shrunk) .text {
+            opacity: 1;
+        }
+
+        .button.shrunk .text {
+            display: none;
+        }
+
+        #exploreNearbyButton {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        #localDealsButton {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 8px;
+        }
+
+        .button.shrunk .icon {
+            margin-right: 0;
+        }
+
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            bottom: -100%;
+            left: 50%;
+            transform: translate(-50%, 100%);
+            width: 85%;
+            max-width: 260px;
+            background-color: #fffaf0;
+            color: #800020;
+            border: 3px solid #800020;
+            border-radius: 15px;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            z-index: 15;
+            pointer-events: none;
+            transition: transform 0.5s ease, bottom 0.5s ease;
+            text-align: center;
+        }
+
+        .popup.visible {
+            bottom: 20%;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+
+        .popup .icon-top {
+            width: 45px;
+            height: 45px;
+            margin-bottom: 5px;
+        }
+
+        .popup h2 {
+            color: #800020;
+            border-bottom: 2px solid #D2B48C;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .popup ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .popup li {
+            margin: 8px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .link-button {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 15px;
+            background-color: #D2B48C;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        /* Close Button for Popups */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px; /* Moved greatly to the right */
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            color: #800020;
+            cursor: pointer;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .button {
+                width: 180px;
+                height: 55px;
+                font-size: 18px;
+            }
+
+            .button.shrunk {
+                width: 50px;
+                height: 50px;
+            }
+
+            #exploreNearbyButton, #localDealsButton {
+                bottom: 10px;
+            }
+
+            .popup {
+                width: 90%;
+                max-width: none;
+            }
+
+            #menu-image {
+                max-width: 90%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Displaying the combined menu image -->
+    <img id="menu-image" src="SampleToastMenu.jpg" alt="Brunch Menu">
+
+    <!-- Advertisement section that pops up initially -->
+    <div id="ad">SPECIAL OFFER: 10% OFF MIMOSA FLIGHTS!</div>
+
+    <!-- Popup for Explore Nearby -->
+    <div id="explorePopup" class="popup">
+        <button class="close-btn" onclick="closePopup('explorePopup')">-</button>
+        <img src="https://img.icons8.com/ios-filled/50/800020/marker.png" alt="Location Icon" class="icon-top">
+        <h2>Upcoming Events & Activities</h2>
+        <ul>
+            <li><button onclick="trackAndOpen('https://www.cameronartmuseum.org/', 'Cameron Art Museum - Jazz Music')" class="link-button">
+                <img src="https://img.icons8.com/ios-filled/24/FFFFFF/saxophone.png" class="icon">
+                10/19: Jazz Music at Cameron Art Museum at 8PM
+            </button></li>
+            <li><button onclick="trackAndOpen('https://www.wilmingtonandbeaches.com/event/be-salty%3A-crystal-pier-yoga/7674/', 'Crystal Pier Yoga')" class="link-button">
+                <img src="https://img.icons8.com/ios-filled/24/FFFFFF/sunrise.png" class="icon">
+                10/20: Crystal Pier Sunrise Yoga at 5AM
+            </button></li>
+            <li><button onclick="trackAndOpen('https://www.thewilmingtonfarmersmarket.com/', 'Wrightsville Beach Farmers Market')" class="link-button">
+                <img src="https://img.icons8.com/ios-filled/24/FFFFFF/apple.png" class="icon">
+                10/21: Wrightsville Beach Farmers Market from 9AM - 1PM
+            </button></li>
+        </ul>
+    </div>
+
+    <!-- Popup for Local Deals -->
+    <div id="dealsPopup" class="popup">
+        <button class="close-btn" onclick="closePopup('dealsPopup')">-</button>
+        <img src="https://img.icons8.com/ios-filled/50/800020/shopping-bag.png" alt="Shopping Bag Icon" class="icon-top"> <!-- Changed to shopping bag icon -->
+        <h2>Local Deals & Discounts</h2>
+        <ul>
+            <li><button onclick="trackAndOpen('https://bellemarswim.com/', 'Belle Mar Swim - 20% off')" class="link-button">
+                <img src="https://img.icons8.com/ios-filled/24/FFFFFF/beach.png" class="icon">
+                Belle Mar Swim: 20% off Swimsuits
+            </button></li>
+            <li><button onclick="trackAndOpen('https://www.theworkshopwb.com/', 'The Workshop - Buy 1 Get 1 Free Coffee')" class="link-button">
+                <img src="https://img.icons8.com/ios-filled/24/FFFFFF/coffee.png" class="icon">
+                The Workshop: Buy 1 Get 1 Free Coffee
+            </button></li>
+            <li><button onclick="trackAndOpen('https://www.shopziaboutique.com/', 'Zia Boutique - 10% off Sweaters')" class="link-button">
+                <img src="https://img.icons8.com/ios-filled/24/FFFFFF/t-shirt.png" class="icon">
+                Zia: 10% off Sweaters
+            </button></li>
+        </ul>
+    </div>
+
+    <!-- Button to reveal nearby activities -->
+    <button id="exploreNearbyButton" class="button" onclick="handleButtonClick('exploreNearbyButton', 'explorePopup', 'localDealsButton', 'dealsPopup')">
+        <img src="https://img.icons8.com/ios-filled/50/FFFFFF/marker.png" alt="Location Pin" class="icon"> 
+        <span class="text">Explore Nearby</span>
+    </button>
+
+    <!-- Button to reveal local deals -->
+    <button id="localDealsButton" class="button" onclick="handleButtonClick('localDealsButton', 'dealsPopup', 'exploreNearbyButton', 'explorePopup')">
+        <img src="https://img.icons8.com/ios-filled/50/FFFFFF/shopping-bag.png" alt="Shopping Bag" class="icon"> <!-- Changed to shopping bag icon -->
+        <span class="text">Local Deals</span>
+    </button>
+
+    <script>
+        let activePopup = null;
+
+        window.onload = function() {
+            var ad = document.getElementById('ad');
+            var exploreNearbyButton = document.getElementById('exploreNearbyButton');
+            var localDealsButton = document.getElementById('localDealsButton');
+            
+            // Fade in the ad on load
+            ad.style.opacity = 1;
+            
+            // After 3 seconds, fade out the ad
+            setTimeout(function() {
+                ad.style.opacity = 0;
+            }, 3000);
+
+            // Show the buttons 3 seconds after the ad fades out
+            setTimeout(function() {
+                exploreNearbyButton.style.opacity = 1;
+                localDealsButton.style.opacity = 1;
+            }, 6000);
+
+            // After 3 more seconds, shrink buttons to corners, and enable them
+            setTimeout(function() {
+                exploreNearbyButton.classList.add('shrunk');
+                exploreNearbyButton.classList.remove('disabled');
+                
+                localDealsButton.classList.add('shrunk');
+                localDealsButton.classList.remove('disabled');
+            }, 9000);
+        }
+
+        function handleButtonClick(buttonId, popupId, otherButtonId, otherPopupId) {
+            var button = document.getElementById(buttonId);
+            var popup = document.getElementById(popupId);
+            var otherButton = document.getElementById(otherButtonId);
+            var otherPopup = document.getElementById(otherPopupId);
+
+            // Close the other button and popup if open
+            if (!otherButton.classList.contains('shrunk') || otherPopup.classList.contains('visible')) {
+                otherButton.classList.add('shrunk');
+                otherPopup.classList.remove('visible');
+            }
+
+            // Toggle button expansion and show/hide popup
+            if (button.classList.contains('shrunk')) {
+                button.classList.remove('shrunk');
+                popup.classList.add('visible');
+                activePopup = popupId; // Track active popup
+            } else {
+                button.classList.add('shrunk');
+                popup.classList.remove('visible');
+            }
+        }
+
+        function closePopup(popupId) {
+            var popup = document.getElementById(popupId);
+            popup.classList.remove('visible');
+            // Collapse the associated button
+            if (popupId === 'explorePopup') {
+                document.getElementById('exploreNearbyButton').classList.add('shrunk');
+            } else if (popupId === 'dealsPopup') {
+                document.getElementById('localDealsButton').classList.add('shrunk');
+            }
+        }
+
+        function trackAndOpen(url, label) {
+            // Track the click event with a custom label
+            gtag('event', 'redirect_click', {
+                'event_category': 'Redirect Interaction',
+                'event_label': label
+            });
+            
+            // Delay the opening slightly to ensure the event registers
+            setTimeout(function() {
+                window.open(url, '_blank');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
